@@ -10,17 +10,7 @@ module.exports = {
         extensions: [ '.js' ]
     },
     module: {
-        rules: [
-            {
-                test: /\.css$/i,
-                loader: 'css-loader',
-                issuer: /\.html?$/i
-            },
-            {
-                test: /\.css$/i,
-                loader: ['style-loader', 'css-loader'],
-                issuer: /\.[tj]s$/i
-            },
+        rules: [            
             { test: /\.(png|woff|woff2|eot|ttf|svg)(\?|$)/, loader: 'url-loader?limit=100000' },
             { test: /\.css(\?|$)/, loader: extractCSS.extract(['css-loader']) }
         ]

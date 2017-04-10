@@ -5,27 +5,27 @@ const { AureliaPlugin } = require("aurelia-webpack-plugin");
 
 var bundleOutputDir = './wwwroot/dist';
 module.exports = {
-    entry: { main: "aurelia-bootstrapper" },
+    entry: { 'app': "aurelia-bootstrapper" },
 
     output: {
         path: path.resolve(bundleOutputDir),
         publicPath: '/dist/',
-        filename: '[name].js'
+        filename: '[name].js',
+        chunkFilename: '[id].chunk.js'
     },
 
     resolve: {
-        extensions: ['.js', '.ts'],
-        modules: ["ClientApp", "node_modules"].map(x => path.resolve(x))
+        extensions: [".ts", ".js"],
+        modules: ["ClientApp", "node_modules"],
     },
 
     module: {
-        rules: [
-            { test: /\.css$/i, loader: 'css-loader', issuer: /\.html?$/i },
-            { test: /\.css$/i, loader: ['style-loader', 'css-loader'], issuer: /\.[tj]s$/i },
-            { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' },
-            { test: /\.less$/i, use: ["style-loader", "css-loader", "less-loader"] },
-            { test: /\.ts$/, include: /ClientApp/, use: ['awesome-typescript-loader?silent=true'] },
-            { test: /\.html$/i, use: "html-loader" }
+        rules: [           
+            { test: /\.css$/i, use: ["css-loader"] },
+            { test: /\.html$/i, use: ["html-loader"] },
+            { test: /\.ts$/i, loaders: ['ts-loader'], exclude: path.resolve(__dirname, 'node_modules') },
+            { test: /\.json$/i, loader: 'json-loader', exclude: path.resolve(__dirname, 'node_modules') },
+            { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader', query: { limit: 8192 } } 
         ]
 
     },
@@ -36,9 +36,7 @@ module.exports = {
             context: __dirname,
             manifest: require('./wwwroot/dist/vendor-manifest.json')
         }),
-        new AureliaPlugin({
-            aureliaApp: undefined
-        })
+        new AureliaPlugin({ includeAll: "ClientApp" })
     ].concat(isDevBuild ? [
         // Plugins that apply in development builds only
         new webpack.SourceMapDevToolPlugin({
